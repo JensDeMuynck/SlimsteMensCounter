@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: #af3c34;
+            font-family: sans-serif;
+        }
+
+        .counter,
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        .counter__label {
+            background: rgb(165, 165, 165);
+            width: 60vw;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4em;
+            border-radius: 0.4em;
+        }
+
+        button {
+            width: 25vw;
+            height: 25vw;
+            border-radius: 25vw;
+            border: none;
+            outline: none;
+            background: white;
+        }
+
+        button:nth-child(2) {
+            margin: 0 5vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="counter">
+            <div class="counter__label js-count">60</div>
+        </div>
+        <div class="controls">
+            <button id="btnMinus">- 20</button>
+            <button id="btnStartStop">Start / Stop</button>
+            <button id="btnPlus">+ 20</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('click', (e) => {
+            e.preventDefault()
+        })
+
+        let PAUSED = true;
+        let COUNT_LABEL = document.querySelector('.js-count');
+        let COUNT = 60;
+
+        let btnMinus = document.querySelector('#btnMinus');
+        let btnPlus = document.querySelector('#btnPlus');
+        let btnStartStop = document.querySelector('#btnStartStop');
+
+        var audio_plus = new Audio('plus.wav');
+        var audio_minus = new Audio('minus.mp3');
+        var audio_start = new Audio('start.mp3');
+        var audio_stop = new Audio('stop.mp3');
+
+        let updateLabel = (num) => {
+            COUNT_LABEL.innerText = num;
+        }
+        updateLabel(COUNT);
+
+        btnMinus.addEventListener('click', () => {
+            audio_minus.play();
+
+            COUNT -= 20;
+            updateLabel(COUNT);
+        })
+
+        btnPlus.addEventListener('click', () => {
+            audio_plus.play();
+
+            COUNT += 20;
+            updateLabel(COUNT);
+        })
+
+        let gameInterval;
+        btnStartStop.addEventListener('click', () => {
+            if (PAUSED) {
+                audio_start.play();
+
+                gameInterval = setInterval(countDown, 1000);
+                PAUSED = false
+            }
+            else {
+                audio_stop.play();
+
+                window.clearInterval(gameInterval);
+                gameInterval = null;
+                PAUSED = true
+            }
+        })
+
+        let countDown = () => {
+            COUNT--;
+            if (COUNT <= 0) {
+                COUNT = 0;
+            }
+            updateLabel(COUNT);
+        }
+    </script>
+</body>
+
+</html>
